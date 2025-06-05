@@ -24,6 +24,7 @@ public class ChipInfo {
         cliffs_singleBin,
         cliffs_7_singleBin,
         kalama_sg_singleBin,
+        parrot_singleBin,
         sun,
         unknown
     }
@@ -45,7 +46,8 @@ public class ChipInfo {
                 || type == ChipInfo.type.kalama || type == ChipInfo.type.diwali
                 || type == ChipInfo.type.ukee_singleBin || type == ChipInfo.type.pineapple
                 || type == ChipInfo.type.cliffs_singleBin || type == ChipInfo.type.cliffs_7_singleBin
-                || type == ChipInfo.type.kalama_sg_singleBin || type == ChipInfo.type.sun;
+                || type == ChipInfo.type.kalama_sg_singleBin || type == ChipInfo.type.parrot_singleBin
+                || type == ChipInfo.type.sun;
     }
 
     public static boolean checkChipGeneral(type input) {
@@ -104,6 +106,8 @@ public class ChipInfo {
                 return activity.getResources().getString(R.string.sd7pg3);
             case kalama_sg_singleBin:
                 return activity.getResources().getString(R.string.sdg3xg2);
+            case parrot_singleBin:
+                return activity.getResources().getString(R.string.sd6g1_singlebin);
             case sun:
                 return activity.getResources().getString(R.string.sd8e);
         }
@@ -147,6 +151,8 @@ public class ChipInfo {
                 return rpmh_levels_cliffs.levels;
             else if (ChipInfo.which == type.kalama_sg_singleBin)
                 return rpmh_levels_kalama.levels;
+            else if (ChipInfo.which == type.parrot_singleBin)
+                return rpmh_levels_parrot.levels;
             else if (ChipInfo.which == type.sun)
                 return rpmh_levels_sun.levels;
 
@@ -187,6 +193,8 @@ public class ChipInfo {
                 return rpmh_levels_cliffs.level_str;
             else if (ChipInfo.which == type.kalama_sg_singleBin)
                 return rpmh_levels_kalama.level_str;
+            else if (ChipInfo.which == type.parrot_singleBin)
+                return rpmh_levels_parrot.level_str;
             else if (ChipInfo.which == type.sun)
                 return rpmh_levels_sun.level_str;
 
@@ -1254,6 +1262,76 @@ public class ChipInfo {
                         break;
                     case 479:
                         level_str[i] = "480 - SUPER_TURBO_NO_CPR";
+                        break;
+                    default:
+                        break;
+                }
+            }
+        }
+    }
+
+    private static class rpmh_levels_parrot {
+        public static final int[] levels;
+        public static final String[] level_str;
+
+        static {
+            levels = new int[416]; // 416 elements
+            level_str = new String[levels.length];
+
+            for (int i = 0; i < levels.length; i++) {
+                levels[i] = i + 1; // Start from 1
+                level_str[i] = String.valueOf(levels[i]);
+                switch (i) {
+                    case 15:
+                        level_str[i] = "16 - RETENTION";
+                        break;
+                    case 47:
+                        level_str[i] = "48 - MIN_SVS";
+                        break;
+                    case 55:
+                        level_str[i] = "56 - LOW_SVS_D1";
+                        break;
+                    case 63:
+                        level_str[i] = "64 - LOW_SVS";
+                        break;
+                    case 79:
+                        level_str[i] = "80 - LOW_SVS_L1";
+                        break;
+                    case 95:
+                        level_str[i] = "96 - LOW_SVS_L2";
+                        break;
+                    case 127:
+                        level_str[i] = "128 - SVS";
+                        break;
+                    case 143:
+                        level_str[i] = "144 - SVS_L0";
+                        break;
+                    case 191:
+                        level_str[i] = "192 - SVS_L1";
+                        break;
+                    case 223:
+                        level_str[i] = "224 - SVS_L2";
+                        break;
+                    case 255:
+                        level_str[i] = "256 - NOM";
+                        break;
+                    case 319:
+                        level_str[i] = "320 - NOM_L1";
+                        break;
+                    case 335:
+                        level_str[i] = "336 - NOM_L2";
+                        break;
+                    case 351:
+                        level_str[i] = "352 - NOM_L3";
+                        break;
+                    case 383:
+                        level_str[i] = "384 - TURBO";
+                        break;
+                    case 399:
+                        level_str[i] = "400 - TURBO_L0";
+                        break;
+                    case 415:
+                        level_str[i] = "416 - TURBO_L1";
                         break;
                     default:
                         break;

@@ -43,6 +43,8 @@ public class KonaBessStr {
             return convert_bins_cliffs_7(which, activity);
         else if (ChipInfo.which == ChipInfo.type.kalama_sg_singleBin)
             return convert_bins_kalama_sg(which, activity);
+        else if (ChipInfo.which == ChipInfo.type.parrot_singleBin)
+            return convert_bins_parrot(which, activity);
         else if (ChipInfo.which == ChipInfo.type.sun)
             return convert_bins_sun(which, activity);
 
@@ -210,6 +212,14 @@ public class KonaBessStr {
         switch (which) {
             case 0:
                 return activity.getResources().getString(R.string.sdg3xg2);
+        }
+        return activity.getResources().getString(R.string.unknown_table) + which;
+    }
+
+    public static String convert_bins_parrot(int which, Activity activity) {
+        switch (which) {
+            case 0:
+                return activity.getResources().getString(R.string.sd6g1_singlebin);
         }
         return activity.getResources().getString(R.string.unknown_table) + which;
     }
