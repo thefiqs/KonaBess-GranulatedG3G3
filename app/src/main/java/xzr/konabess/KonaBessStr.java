@@ -46,7 +46,7 @@ public class KonaBessStr {
         else if (ChipInfo.which == ChipInfo.type.parrot_singleBin)
             return convert_bins_parrot(which, activity);
 		else if (ChipInfo.which == ChipInfo.type.g3g3_singlebin)
-			return convert_bins_g3g3(activity);
+			return convert_bins_g3g3(which, activity);
         else if (ChipInfo.which == ChipInfo.type.sun)
             return convert_bins_sun(which, activity);
 
