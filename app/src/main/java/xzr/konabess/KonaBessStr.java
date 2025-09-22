@@ -227,8 +227,11 @@ public class KonaBessStr {
     }
 	
 	public static String convert_bins_g3g3(int which, Activity activity) {
-    // single bin, no switch needed
-		return activity.getResources().getString(R.string.g3g3_singlebin);
+		switch (which) {
+			case 0:
+				return activity.getResources().getString(R.string.g3g3_singlebin);
+		}
+		return activity.getResources().getString(R.string.unknown_table) + which;
 	}
 	
     public static String convert_bins_sun(int which, Activity activity) {
