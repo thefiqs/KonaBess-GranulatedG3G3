@@ -35,8 +35,8 @@ public class ChipInfo {
                 || type == ChipInfo.type.kalama || type == ChipInfo.type.diwali
                 || type == ChipInfo.type.ukee_singleBin || type == ChipInfo.type.pineapple
                 || type == ChipInfo.type.cliffs_singleBin || type == ChipInfo.type.cliffs_7_singleBin
-                || type == ChipInfo.type.kalama_sg_singleBin || type == ChipInfo.type.sun
-				|| type == ChipInfo.type.g3g3_singlebin)
+                || type == ChipInfo.type.kalama_sg_singleBin || type == ChipInfo.type.g3g3_singlebin				
+				|| type == ChipInfo.type.sun)
             return 16;
         return 11;
     }
@@ -49,8 +49,7 @@ public class ChipInfo {
                 || type == ChipInfo.type.ukee_singleBin || type == ChipInfo.type.pineapple
                 || type == ChipInfo.type.cliffs_singleBin || type == ChipInfo.type.cliffs_7_singleBin
                 || type == ChipInfo.type.kalama_sg_singleBin || type == ChipInfo.type.parrot_singleBin
-				|| type == ChipInfo.type.g3g3_singlebin
-                || type == ChipInfo.type.sun;
+				|| type == ChipInfo.type.g3g3_singlebin	|| type == ChipInfo.type.sun;                
     }
 
     public static boolean checkChipGeneral(type input) {
@@ -1102,7 +1101,7 @@ public class ChipInfo {
         public static final String[] level_str;
 
         static {
-            levels = new int[480]; // 480 elements
+            levels = new int[416]; // Match DTB6 style
             level_str = new String[levels.length];
 
             for (int i = 0; i < levels.length; i++) {
@@ -1115,20 +1114,11 @@ public class ChipInfo {
                     case 47:
                         level_str[i] = "48 - MIN_SVS";
                         break;
-                    case 51:
-                        level_str[i] = "52 - LOW_SVS_D2";
-                        break;
                     case 55:
                         level_str[i] = "56 - LOW_SVS_D1";
                         break;
-                    case 59:
-                        level_str[i] = "60 - LOW_SVS_D0";
-                        break;
                     case 63:
                         level_str[i] = "64 - LOW_SVS";
-                        break;
-                    case 71:
-                        level_str[i] = "72 - LOW_SVS_P1";
                         break;
                     case 79:
                         level_str[i] = "80 - LOW_SVS_L1";
@@ -1151,14 +1141,14 @@ public class ChipInfo {
                     case 255:
                         level_str[i] = "256 - NOM";
                         break;
-                    case 287:
-                        level_str[i] = "288 - NOM_L0";
-                        break;
                     case 319:
                         level_str[i] = "320 - NOM_L1";
                         break;
                     case 335:
                         level_str[i] = "336 - NOM_L2";
+                        break;
+                    case 351:
+                        level_str[i] = "352 - NOM_L3";
                         break;
                     case 383:
                         level_str[i] = "384 - TURBO";
@@ -1168,18 +1158,6 @@ public class ChipInfo {
                         break;
                     case 415:
                         level_str[i] = "416 - TURBO_L1";
-                        break;
-                    case 431:
-                        level_str[i] = "432 - TURBO_L2";
-                        break;
-                    case 447:
-                        level_str[i] = "448 - TURBO_L3";
-                        break;
-                    case 463:
-                        level_str[i] = "464 - SUPER_TURBO";
-                        break;
-                    case 479:
-                        level_str[i] = "480 - SUPER_TURBO_NO_CPR";
                         break;
                     default:
                         break;
