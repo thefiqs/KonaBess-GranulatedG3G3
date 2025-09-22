@@ -35,7 +35,8 @@ public class ChipInfo {
                 || type == ChipInfo.type.kalama || type == ChipInfo.type.diwali
                 || type == ChipInfo.type.ukee_singleBin || type == ChipInfo.type.pineapple
                 || type == ChipInfo.type.cliffs_singleBin || type == ChipInfo.type.cliffs_7_singleBin
-                || type == ChipInfo.type.kalama_sg_singleBin || type == ChipInfo.type.sun)
+                || type == ChipInfo.type.kalama_sg_singleBin || type == ChipInfo.type.sun
+				|| type == ChipInfo.type.g3g3_singlebin)
             return 16;
         return 11;
     }
