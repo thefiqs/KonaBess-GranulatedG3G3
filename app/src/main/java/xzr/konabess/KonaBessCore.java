@@ -274,18 +274,17 @@ public class KonaBessCore {
                 dtb.id = i;
                 dtb.type = ChipInfo.type.ukee_singleBin;
                 dtbs.add(dtb);
-            } else if (checkChip(context, i, "Pineapple v2")
-                    || checkChip(context, i, "PineappleP v2")) {
-                dtb dtb = new dtb();
-                dtb.id = i;
-                dtb.type = ChipInfo.type.pineapple;
-                dtbs.add(dtb);
-			} else if (checkChip(context, i, "pineapplep")) {
-				// Snapdragon G3 Gen3 (PineappleP variant)
+            } else if (checkChip(context, i, "PineappleP SG V2 SoC")) {		
 				dtb dtb = new dtb();
 				dtb.id = i;
 				dtb.type = ChipInfo.type.pineapplep_singleBin;
 				dtbs.add(dtb);			
+			} else if (checkChip(context, i, "Pineapple v2")
+                    || checkChip(context, i, "PineappleP v2")) {
+                dtb dtb = new dtb();
+                dtb.id = i;
+                dtb.type = ChipInfo.type.pineapple;
+                dtbs.add(dtb);			
             } else if (checkChip(context, i, "Cliffs SoC")) {
                 dtb dtb = new dtb();
                 dtb.id = i;
