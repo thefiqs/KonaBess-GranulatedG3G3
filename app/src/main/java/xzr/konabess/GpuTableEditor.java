@@ -74,7 +74,7 @@ public class GpuTableEditor {
                     || ChipInfo.which == ChipInfo.type.cliffs_7_singleBin
                     || ChipInfo.which == ChipInfo.type.kalama_sg_singleBin
                     || ChipInfo.which == ChipInfo.type.parrot_singleBin
-					|| ChipInfo.which == ChipInfo.type.g3g3_singlebin)
+					|| ChipInfo.which == ChipInfo.type.pineapplep_singleBin)
                     && this_line.equals("qcom,gpu-pwrlevels {")) {
                 start = i;
                 if (bin_position < 0)
@@ -142,7 +142,7 @@ public class GpuTableEditor {
                     || ChipInfo.which == ChipInfo.type.cliffs_singleBin
                     || ChipInfo.which == ChipInfo.type.cliffs_7_singleBin
                     || ChipInfo.which == ChipInfo.type.kalama_sg_singleBin
-					|| ChipInfo.which == ChipInfo.type.g3g3_singlebin
+					|| ChipInfo.which == ChipInfo.type.pineapplep_singleBin
                     || ChipInfo.which == ChipInfo.type.parrot_singleBin)) {
                 end = i;
                 if (end >= start) {
@@ -259,7 +259,7 @@ public class GpuTableEditor {
                 || ChipInfo.which == ChipInfo.type.cliffs_singleBin
                 || ChipInfo.which == ChipInfo.type.cliffs_7_singleBin
                 || ChipInfo.which == ChipInfo.type.kalama_sg_singleBin
-				|| ChipInfo.which == ChipInfo.type.g3g3_singlebin
+				|| ChipInfo.which == ChipInfo.type.pineapplep_singleBin
                 || ChipInfo.which == ChipInfo.type.parrot_singleBin) {
             lines.add("qcom,gpu-pwrlevels {");
             lines.addAll(bins.get(0).header);
@@ -463,7 +463,7 @@ public class GpuTableEditor {
                 || ChipInfo.which == ChipInfo.type.cliffs_singleBin
                 || ChipInfo.which == ChipInfo.type.cliffs_7_singleBin
                 || ChipInfo.which == ChipInfo.type.kalama_sg_singleBin
-				|| ChipInfo.which == ChipInfo.type.g3g3_singlebin
+				|| ChipInfo.which == ChipInfo.type.pineapplep_singleBin
                 || ChipInfo.which == ChipInfo.type.parrot_singleBin) {
             offset_initial_level_old(offset);
             return;
@@ -539,7 +539,7 @@ public class GpuTableEditor {
                 || ChipInfo.which == ChipInfo.type.cliffs_singleBin
                 || ChipInfo.which == ChipInfo.type.cliffs_7_singleBin
                 || ChipInfo.which == ChipInfo.type.kalama_sg_singleBin
-				|| ChipInfo.which == ChipInfo.type.g3g3_singlebin
+				|| ChipInfo.which == ChipInfo.type.pineapplep_singleBin
                 || ChipInfo.which == ChipInfo.type.parrot_singleBin) {
             patch_throttle_level_old();
             return;
@@ -578,7 +578,7 @@ public class GpuTableEditor {
                 || ChipInfo.which == ChipInfo.type.cliffs_7_singleBin
                 || ChipInfo.which == ChipInfo.type.kalama_sg_singleBin
                 || ChipInfo.which == ChipInfo.type.parrot_singleBin
-				|| ChipInfo.which == ChipInfo.type.g3g3_singlebin
+				|| ChipInfo.which == ChipInfo.type.pineapplep_singleBin
                 || ChipInfo.which == ChipInfo.type.sun)
             return 1;
         if (ChipInfo.which == ChipInfo.type.kona || ChipInfo.which == ChipInfo.type.kona_singleBin

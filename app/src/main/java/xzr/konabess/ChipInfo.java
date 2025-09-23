@@ -25,7 +25,7 @@ public class ChipInfo {
         cliffs_7_singleBin,
         kalama_sg_singleBin,
         parrot_singleBin,
-		g3g3_singlebin,
+		pineapplep_singleBin,
         sun,
         unknown
     }
@@ -35,7 +35,7 @@ public class ChipInfo {
                 || type == ChipInfo.type.kalama || type == ChipInfo.type.diwali
                 || type == ChipInfo.type.ukee_singleBin || type == ChipInfo.type.pineapple
                 || type == ChipInfo.type.cliffs_singleBin || type == ChipInfo.type.cliffs_7_singleBin
-                || type == ChipInfo.type.kalama_sg_singleBin || type == ChipInfo.type.g3g3_singlebin				
+                || type == ChipInfo.type.kalama_sg_singleBin || type == ChipInfo.type.pineapplep_singleBin				
 				|| type == ChipInfo.type.sun)
             return 16;
         return 11;
@@ -49,7 +49,7 @@ public class ChipInfo {
                 || type == ChipInfo.type.ukee_singleBin || type == ChipInfo.type.pineapple
                 || type == ChipInfo.type.cliffs_singleBin || type == ChipInfo.type.cliffs_7_singleBin
                 || type == ChipInfo.type.kalama_sg_singleBin || type == ChipInfo.type.parrot_singleBin
-				|| type == ChipInfo.type.g3g3_singlebin	|| type == ChipInfo.type.sun;                
+				|| type == ChipInfo.type.pineapplep_singleBin	|| type == ChipInfo.type.sun;                
     }
 
     public static boolean checkChipGeneral(type input) {
@@ -110,8 +110,8 @@ public class ChipInfo {
                 return activity.getResources().getString(R.string.sdg3xg2);
             case parrot_singleBin:
                 return activity.getResources().getString(R.string.sd6g1_singlebin);
-			case g3g3_singlebin:
-				return activity.getResources().getString(R.string.g3g3_singlebin);
+			case pineapplep_singleBin:
+				return activity.getResources().getString(R.string.pineapplep_singleBin);
             case sun:
                 return activity.getResources().getString(R.string.sd8e);
         }
@@ -157,8 +157,8 @@ public class ChipInfo {
                 return rpmh_levels_kalama.levels;
             else if (ChipInfo.which == type.parrot_singleBin)
                 return rpmh_levels_parrot.levels;
-			else if (ChipInfo.which == type.g3g3_singlebin)
-				return rpmh_levels_g3g3_singlebin.levels;
+			else if (ChipInfo.which == type.pineapplep_singleBin)
+				return rpmh_levels_pineapplep_singleBin.levels;
             else if (ChipInfo.which == type.sun)
                 return rpmh_levels_sun.levels;
 
@@ -201,8 +201,8 @@ public class ChipInfo {
                 return rpmh_levels_kalama.level_str;
             else if (ChipInfo.which == type.parrot_singleBin)
                 return rpmh_levels_parrot.level_str;
-			else if (ChipInfo.which == type.g3g3_singlebin)
-                return rpmh_levels_g3g3_singlebin.level_str;
+			else if (ChipInfo.which == type.pineapplep_singleBin)
+                return rpmh_levels_pineapplep_singleBin.level_str;
             else if (ChipInfo.which == type.sun)
                 return rpmh_levels_sun.level_str;
 
@@ -1096,7 +1096,7 @@ public class ChipInfo {
         }
     }
 
-    private static class rpmh_levels_g3g3_singlebin {
+    private static class rpmh_levels_pineapplep_singleBin {
         public static final int[] levels;
         public static final String[] level_str;
 
