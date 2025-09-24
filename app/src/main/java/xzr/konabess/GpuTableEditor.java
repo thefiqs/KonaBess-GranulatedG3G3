@@ -75,7 +75,8 @@ public class GpuTableEditor {
                     || ChipInfo.which == ChipInfo.type.kalama_sg_singleBin
                     || ChipInfo.which == ChipInfo.type.parrot_singleBin
 					|| ChipInfo.which == ChipInfo.type.pineapplep_singleBin)
-                    && this_line.equals("qcom,gpu-pwrlevels {")) {
+                    && (this_line.equals("qcom,gpu-pwrlevels {")
+						|| this_line.equals("qcom,gpu-pwrlevel-bins {"))) {
                 start = i;
                 if (bin_position < 0)
                     bin_position = i;
@@ -261,7 +262,11 @@ public class GpuTableEditor {
                 || ChipInfo.which == ChipInfo.type.kalama_sg_singleBin
 				|| ChipInfo.which == ChipInfo.type.pineapplep_singleBin
                 || ChipInfo.which == ChipInfo.type.parrot_singleBin) {
-            lines.add("qcom,gpu-pwrlevels {");
+			String startTag = (ChipInfo.which == ChipInfo.type.pineapplep_singleBin)
+				? "qcom,gpu-pwrlevel-bins {"
+				: "qcom,gpu-pwrlevels {";
+				
+            lines.add(startTag);
             lines.addAll(bins.get(0).header);
             for (int pwr_level_id = 0; pwr_level_id < bins.get(0).levels.size(); pwr_level_id++) {
                 lines.add("qcom,gpu-pwrlevel@" + pwr_level_id + " {");
