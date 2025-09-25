@@ -65,24 +65,33 @@ public class GpuTableEditor {
             this_line = lines_in_dts.get(i).trim();
 
             if ((ChipInfo.which == ChipInfo.type.kona_singleBin
-                    || ChipInfo.which == ChipInfo.type.msmnile_singleBin
-                    || ChipInfo.which == ChipInfo.type.lahaina_singleBin
-                    || ChipInfo.which == ChipInfo.type.waipio_singleBin
-                    || ChipInfo.which == ChipInfo.type.cape_singleBin
-                    || ChipInfo.which == ChipInfo.type.ukee_singleBin
-                    || ChipInfo.which == ChipInfo.type.cliffs_singleBin
-                    || ChipInfo.which == ChipInfo.type.cliffs_7_singleBin
-                    || ChipInfo.which == ChipInfo.type.kalama_sg_singleBin
-                    || ChipInfo.which == ChipInfo.type.parrot_singleBin
-					|| ChipInfo.which == ChipInfo.type.pineapplep_singleBin)
-                    && (this_line.equals("qcom,gpu-pwrlevels {")
-						|| this_line.equals("qcom,gpu-pwrlevel-bins {"))) {
-                start = i;
-                if (bin_position < 0)
-                    bin_position = i;
-                bracket++;
-                continue;
-            }
+					|| ChipInfo.which == ChipInfo.type.msmnile_singleBin
+					|| ChipInfo.which == ChipInfo.type.lahaina_singleBin
+					|| ChipInfo.which == ChipInfo.type.waipio_singleBin
+					|| ChipInfo.which == ChipInfo.type.cape_singleBin
+					|| ChipInfo.which == ChipInfo.type.ukee_singleBin
+					|| ChipInfo.which == ChipInfo.type.cliffs_singleBin
+					|| ChipInfo.which == ChipInfo.type.cliffs_7_singleBin
+					|| ChipInfo.which == ChipInfo.type.kalama_sg_singleBin
+					|| ChipInfo.which == ChipInfo.type.parrot_singleBin)
+					&& this_line.equals("qcom,gpu-pwrlevels {")) {
+				start = i;
+				if (bin_position < 0)
+					bin_position = i;
+				bracket++;
+				continue;
+			}
+		
+			if (ChipInfo.which == ChipInfo.type.pineapplep_singleBin
+					&& this_line.equals("qcom,gpu-pwrlevel-bins {")) {
+				start = i;
+				if (bin_position < 0)
+					bin_position = i;
+				bracket++;
+				continue;
+			}
+		
+		
             if ((ChipInfo.which == ChipInfo.type.kona
                     || ChipInfo.which == ChipInfo.type.msmnile
                     || ChipInfo.which == ChipInfo.type.lahaina
@@ -468,11 +477,26 @@ public class GpuTableEditor {
                 || ChipInfo.which == ChipInfo.type.cliffs_singleBin
                 || ChipInfo.which == ChipInfo.type.cliffs_7_singleBin
                 || ChipInfo.which == ChipInfo.type.kalama_sg_singleBin
-				|| ChipInfo.which == ChipInfo.type.pineapplep_singleBin
-                || ChipInfo.which == ChipInfo.type.parrot_singleBin) {
+				|| ChipInfo.which == ChipInfo.type.parrot_singleBin) {
             offset_initial_level_old(offset);
             return;
         }
+		
+		// Special handling for Pineapple-P (single-bin inside gpu-pwrlevel-bins)
+		if (ChipInfo.which == ChipInfo.type.pineapplep_singleBin) {
+			for (int i = 0; i < bins.get(0).header.size(); i++) {
+				String line = bins.get(0).header.get(i);
+				if (line.contains("qcom,initial-pwrlevel")) {
+					bins.get(0).header.set(i,
+							DtsHelper.encodeIntOrHexLine(
+									DtsHelper.decode_int_line(line).name,
+									DtsHelper.decode_int_line(line).value + offset + ""));
+					break;
+				}
+			}
+			return;
+		}
+		
         for (int i = 0; i < bins.get(bin_id).header.size(); i++) {
             String line = bins.get(bin_id).header.get(i);
             if (line.contains("qcom,initial-pwrlevel")) {
@@ -543,12 +567,26 @@ public class GpuTableEditor {
                 || ChipInfo.which == ChipInfo.type.ukee_singleBin
                 || ChipInfo.which == ChipInfo.type.cliffs_singleBin
                 || ChipInfo.which == ChipInfo.type.cliffs_7_singleBin
-                || ChipInfo.which == ChipInfo.type.kalama_sg_singleBin
-				|| ChipInfo.which == ChipInfo.type.pineapplep_singleBin
+                || ChipInfo.which == ChipInfo.type.kalama_sg_singleBin				
                 || ChipInfo.which == ChipInfo.type.parrot_singleBin) {
             patch_throttle_level_old();
             return;
         }
+		
+		// Special handling for Pineapple-P (single-bin inside gpu-pwrlevel-bins)
+		if (ChipInfo.which == ChipInfo.type.pineapplep_singleBin) {
+			for (int i = 0; i < bins.get(0).header.size(); i++) {
+				String line = bins.get(0).header.get(i);
+				if (line.contains("qcom,throttle-pwrlevel")) {
+					bins.get(0).header.set(i,
+							DtsHelper.encodeIntOrHexLine(
+									DtsHelper.decode_int_line(line).name, "0"));
+					break;
+				}
+			}
+			return;
+		}
+		
         for (int bin_id = 0; bin_id < bins.size(); bin_id++) {
             for (int i = 0; i < bins.get(bin_id).header.size(); i++) {
                 String line = bins.get(bin_id).header.get(i);
