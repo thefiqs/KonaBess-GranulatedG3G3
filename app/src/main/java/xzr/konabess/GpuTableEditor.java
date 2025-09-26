@@ -82,6 +82,7 @@ public class GpuTableEditor {
 				continue;
 			}
 		
+			// Special handling for Pineapple-P (single-bin inside gpu-pwrlevel-bins)
 			if (ChipInfo.which == ChipInfo.type.pineapplep_singleBin
 					&& this_line.equals("qcom,gpu-pwrlevel-bins {")) {
 				start = i;
@@ -248,8 +249,8 @@ public class GpuTableEditor {
                 || ChipInfo.which == ChipInfo.type.kalama
                 || ChipInfo.which == ChipInfo.type.diwali
                 || ChipInfo.which == ChipInfo.type.pineapple
-                || ChipInfo.which == ChipInfo.type.sun) {
-            for (int bin_id = 0; bin_id < bins.size(); bin_id++) {
+                || ChipInfo.which == ChipInfo.type.sun) {            
+			for (int bin_id = 0; bin_id < bins.size(); bin_id++) {
                 lines.add("qcom,gpu-pwrlevels-" + bins.get(bin_id).id + " {");
                 lines.addAll(bins.get(bin_id).header);
                 for (int pwr_level_id = 0; pwr_level_id < bins.get(bin_id).levels.size(); pwr_level_id++) {
@@ -269,23 +270,31 @@ public class GpuTableEditor {
                 || ChipInfo.which == ChipInfo.type.cliffs_singleBin
                 || ChipInfo.which == ChipInfo.type.cliffs_7_singleBin
                 || ChipInfo.which == ChipInfo.type.kalama_sg_singleBin
-				|| ChipInfo.which == ChipInfo.type.pineapplep_singleBin
                 || ChipInfo.which == ChipInfo.type.parrot_singleBin) {
-			String startTag = (ChipInfo.which == ChipInfo.type.pineapplep_singleBin)
-				? "qcom,gpu-pwrlevel-bins {"
-				: "qcom,gpu-pwrlevels {";
-				
-            lines.add(startTag);
-            lines.addAll(bins.get(0).header);
-            for (int pwr_level_id = 0; pwr_level_id < bins.get(0).levels.size(); pwr_level_id++) {
-                lines.add("qcom,gpu-pwrlevel@" + pwr_level_id + " {");
-                lines.add("reg = <" + pwr_level_id + ">;");
-                lines.addAll(bins.get(0).levels.get(pwr_level_id).lines);
-                lines.add("};");
-            }
-            lines.add("};");
-        }
-        return lines;
+			lines.add("qcom,gpu-pwrlevels {");
+			lines.addAll(bins.get(0).header);
+			for (int pwr_level_id = 0; pwr_level_id < bins.get(0).levels.size(); pwr_level_id++) {
+				lines.add("qcom,gpu-pwrlevel@" + pwr_level_id + " {");
+				lines.add("reg = <" + pwr_level_id + ">;");
+				lines.addAll(bins.get(0).levels.get(pwr_level_id).lines);
+				lines.add("};");
+			}        
+			lines.add("};");
+		} else if (ChipInfo.which == ChipInfo.type.pineapplep_singleBin) {
+			// Special handling for Pineapple-P (single-bin inside gpu-pwrlevel-bins)
+			lines.add("qcom,gpu-pwrlevel-bins {");
+			lines.add("qcom,gpu-pwrlevels-0 {");
+			lines.addAll(bins.get(0).header);
+			for (int pwr_level_id = 0; pwr_level_id < bins.get(0).levels.size(); pwr_level_id++) {
+				lines.add("qcom,gpu-pwrlevel@" + pwr_level_id + " {");
+				lines.add("reg = <" + pwr_level_id + ">;");
+				lines.addAll(bins.get(0).levels.get(pwr_level_id).lines);
+				lines.add("};");
+			}
+			lines.add("};"); // close gpu-pwrlevels-0
+			lines.add("};"); // close gpu-pwrlevel-bins
+		}
+		return lines;
     }
 
     public static List<String> genBack(List<String> table) {
