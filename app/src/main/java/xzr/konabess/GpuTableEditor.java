@@ -61,6 +61,7 @@ public class GpuTableEditor {
 		int start = -1;
 		int end;
 		int bracket = 0;
+
 		while (++i < lines_in_dts.size()) {
 			this_line = lines_in_dts.get(i).trim();
 
@@ -77,8 +78,7 @@ public class GpuTableEditor {
 					|| ChipInfo.which == ChipInfo.type.parrot_singleBin)
 					&& this_line.equals("qcom,gpu-pwrlevels {")) {
 				start = i;
-				if (bin_position < 0)
-					bin_position = i;
+				if (bin_position < 0) bin_position = i;
 				bracket++;
 				continue;
 			}
@@ -87,8 +87,7 @@ public class GpuTableEditor {
 			if (ChipInfo.which == ChipInfo.type.pineapplep_singleBin
 					&& this_line.equals("qcom,gpu-pwrlevel-bins {")) {
 				start = i;
-				if (bin_position < 0)
-					bin_position = i;
+				if (bin_position < 0) bin_position = i;
 				bracket++;
 				continue;
 			}
@@ -108,18 +107,15 @@ public class GpuTableEditor {
 					&& this_line.contains("qcom,gpu-pwrlevels-")
 					&& !this_line.contains("compatible = ")) {
 				start = i;
-				if (bin_position < 0)
-					bin_position = i;
-				if (bracket != 0)
-					throw new Exception();
+				if (bin_position < 0) bin_position = i;
+				if (bracket != 0) throw new Exception();
 				bracket++;
 				continue;
 			}
 
-			if (this_line.contains("{") && start >= 0)
-				bracket++;
-			if (this_line.contains("}") && start >= 0)
-				bracket--;
+			// --- track braces ---
+			if (this_line.contains("{") && start >= 0) bracket++;
+			if (this_line.contains("}") && start >= 0) bracket--;
 
 			// --- end multi-bin block ---
 			if (bracket == 0 && start >= 0
@@ -157,7 +153,8 @@ public class GpuTableEditor {
 					|| ChipInfo.which == ChipInfo.type.cliffs_singleBin
 					|| ChipInfo.which == ChipInfo.type.cliffs_7_singleBin
 					|| ChipInfo.which == ChipInfo.type.kalama_sg_singleBin
-					|| ChipInfo.which == ChipInfo.type.parrot_singleBin)) {
+					|| ChipInfo.which == ChipInfo.type.parrot_singleBin
+					|| ChipInfo.which == ChipInfo.type.pineapplep_singleBin)) {
 				end = i;
 				if (end >= start) {
 					decode_bin(lines_in_dts.subList(start, end + 1));
@@ -169,6 +166,7 @@ public class GpuTableEditor {
 			}
 		}
 	}
+
 
     private static int getBinID(String line, int prev_id) {
         line = line.trim();
@@ -307,7 +305,7 @@ public class GpuTableEditor {
 
 		// --- pineapple-p special single-bin ---
 		} else if (ChipInfo.which == ChipInfo.type.pineapplep_singleBin) {
-			lines.add("qcom,gpu-pwrlevel-bins {");
+			// ⬇️ Only emit gpu-pwrlevels-0 block; genBack() will wrap it in gpu-pwrlevel-bins
 			lines.add("qcom,gpu-pwrlevels-0 {");
 			lines.addAll(bins.get(0).header);
 			for (int pwr_level_id = 0; pwr_level_id < bins.get(0).levels.size(); pwr_level_id++) {
@@ -316,18 +314,88 @@ public class GpuTableEditor {
 				lines.addAll(bins.get(0).levels.get(pwr_level_id).lines);
 				lines.add("};");
 			}
-			lines.add("};"); // close gpu-pwrlevels-0
-			lines.add("};"); // close gpu-pwrlevel-bins
+			lines.add("};");
 		}
 
 		return lines;
 	}
 
-    public static List<String> genBack(List<String> table) {
-        ArrayList<String> new_dts = new ArrayList<>(lines_in_dts);
-        new_dts.addAll(bin_position, table);
-        return new_dts;
-    }
+	public static List<String> genBack(List<String> table) {
+		ArrayList<String> new_dts = new ArrayList<>(lines_in_dts);
+
+		// --- Pineapple-P special handling ---
+		if (ChipInfo.which == ChipInfo.type.pineapplep_singleBin) {
+			int start = -1;
+			int end = -1;
+			int bracket = 0;
+
+			// find qcom,gpu-pwrlevel-bins { ... }
+			for (int i = 0; i < new_dts.size(); i++) {
+				String line = new_dts.get(i).trim();
+				if (line.equals("qcom,gpu-pwrlevel-bins {")) {
+					start = i;
+					bracket = 1;
+					for (int j = i + 1; j < new_dts.size(); j++) {
+						String inner = new_dts.get(j).trim();
+						if (inner.contains("{")) bracket++;
+						if (inner.contains("}")) bracket--;
+						if (bracket == 0) {
+							end = j;
+							break;
+						}
+					}
+					break;
+				}
+			}
+
+			if (start >= 0 && end > start) {
+				// collect wrapper (everything except gpu-pwrlevels-0 child)
+				ArrayList<String> wrapper = new ArrayList<>();
+				bracket = 0;
+				boolean skipping = false;
+				for (int i = start; i <= end; i++) {
+					String line = new_dts.get(i);
+
+					if (line.trim().startsWith("qcom,gpu-pwrlevels-0 {")) {
+						skipping = true;
+					}
+
+					if (skipping) {
+						if (line.contains("{")) bracket++;
+						if (line.contains("}")) bracket--;
+						if (bracket == 0) skipping = false;
+						continue;
+					}
+
+					wrapper.add(line);
+				}
+
+				// remove old block
+				new_dts.subList(start, end + 1).clear();
+
+				// insert wrapper start, table contents, wrapper end
+				ArrayList<String> merged = new ArrayList<>();
+				// everything up to first line of wrapper (qcom,gpu-pwrlevel-bins {)
+				merged.add(wrapper.get(0)); 
+				// keep metadata/header lines, skip final closing }
+				for (int i = 1; i < wrapper.size() - 1; i++) {
+					merged.add(wrapper.get(i));
+				}
+				// insert new gpu-pwrlevels-0 from table
+				merged.addAll(table);
+				// closing brace for wrapper
+				merged.add("};");
+
+				new_dts.addAll(start, merged);
+			}
+
+			return new_dts;
+		}
+
+		// --- generic handling (multi-bin, single-bin, etc.) ---
+		new_dts.addAll(bin_position, table);
+		return new_dts;
+	}
 
     public static void writeOut(List<String> new_dts) throws IOException {
         File file = new File(KonaBessCore.dts_path);
