@@ -1,12 +1,17 @@
-**feat: add Pineapple-P (g3g3) support for GPU table parsing and generation**
+### Added
 
-* Implemented special handling for `pineapplep_singleBin`
-* Updated `decode()` to recognize `qcom,gpu-pwrlevel-bins` structure
-* Adjusted `genTable()` to output nested `gpu-pwrlevel-bins` / `gpu-pwrlevels-0` nodes
-* Extended `offset_initial_level()` and `patch_throttle_level()` to modify Pineapple-P headers correctly
-* Kept backward compatibility with all existing chip variants
+* Pineapple-P (g3g3) support for GPU frequency table editing.
 
-This enables GPU table editing to work properly on Pineapple-P devices (g3g3).
+### Changed
+
+* `decode()` recognizes `qcom,gpu-pwrlevel-bins` nodes.
+* `genTable()` outputs nested `gpu-pwrlevel-bins` / `gpu-pwrlevels-0`.
+* `offset_initial_level()` and `patch_throttle_level()` extended to handle Pineapple-P headers.
+
+### Notes
+
+This update makes KonaBess fully compatible with Pineapple-P devices.
+
 
 
 # KonaBess GRANULATED
