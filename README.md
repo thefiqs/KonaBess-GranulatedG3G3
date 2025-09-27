@@ -1,6 +1,6 @@
 ### Added
 
-* Pineapple-P (g3g3) support for GPU frequency table editing.
+* Pineapple-P (Snapdragon G3 Gen3) support for GPU frequency table editing.
 
 ### Changed
 
