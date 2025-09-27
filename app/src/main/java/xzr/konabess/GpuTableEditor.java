@@ -64,8 +64,7 @@ public class GpuTableEditor {
 
 		while (++i < lines_in_dts.size()) {
 			this_line = lines_in_dts.get(i).trim();
-
-			// --- generic single-bin (qcom,gpu-pwrlevels {) ---
+			// --- single-bin (generic + pineapple-p) ---
 			if ((ChipInfo.which == ChipInfo.type.kona_singleBin
 					|| ChipInfo.which == ChipInfo.type.msmnile_singleBin
 					|| ChipInfo.which == ChipInfo.type.lahaina_singleBin
@@ -75,19 +74,13 @@ public class GpuTableEditor {
 					|| ChipInfo.which == ChipInfo.type.cliffs_singleBin
 					|| ChipInfo.which == ChipInfo.type.cliffs_7_singleBin
 					|| ChipInfo.which == ChipInfo.type.kalama_sg_singleBin
-					|| ChipInfo.which == ChipInfo.type.parrot_singleBin)
-					&& this_line.equals("qcom,gpu-pwrlevels {")) {
+					|| ChipInfo.which == ChipInfo.type.parrot_singleBin
+					|| ChipInfo.which == ChipInfo.type.pineapplep_singleBin)
+					&& (this_line.equals("qcom,gpu-pwrlevels {")
+						|| this_line.equals("qcom,gpu-pwrlevel-bins {"))) {
 				start = i;
-				if (bin_position < 0) bin_position = i;
-				bracket++;
-				continue;
-			}
-
-			// --- pineapple-p special (qcom,gpu-pwrlevel-bins {) ---
-			if (ChipInfo.which == ChipInfo.type.pineapplep_singleBin
-					&& this_line.equals("qcom,gpu-pwrlevel-bins {")) {
-				start = i;
-				if (bin_position < 0) bin_position = i;
+				if (bin_position < 0)
+					bin_position = i;
 				bracket++;
 				continue;
 			}
@@ -167,29 +160,22 @@ public class GpuTableEditor {
 		}
 	}
 
-
-    private static int getBinID(String line, int prev_id) {
-        line = line.trim();
-
-        // Ignore wrapper line
-        if (line.startsWith("qcom,gpu-pwrlevel-bins")) {
-            return prev_id;
-        }
-
-        // Clean the line for parsing
-        line = line.replace(" {", "").replace("-", "");
-
-        try {
-            for (int i = line.length() - 1; i >= 0; i--) {
-                if (Character.isDigit(line.charAt(i))) {
-                    prev_id = Integer.parseInt(line.substring(i));
-                    break;
-                }
-            }
-        } catch (Exception ignored) {
-        }
-        return prev_id;
-    }
+	private static int getBinID(String line, int prev_id) {
+		line = line.trim();
+		line = line.replace(" {", "").replace("-", "");
+		try {
+			// Extract full trailing number (not just one digit)
+			int j = line.length() - 1;
+			while (j >= 0 && Character.isDigit(line.charAt(j))) {
+				j--;
+			}
+			if (j < line.length() - 1) {
+				prev_id = Integer.parseInt(line.substring(j + 1));
+			}
+		} catch (Exception ignored) {
+		}
+		return prev_id;
+	}
 
     private static void decode_bin(List<String> lines) throws Exception {
         // Skip wrapper lines like qcom,gpu-pwrlevel-bins
@@ -303,9 +289,9 @@ public class GpuTableEditor {
 			}
 			lines.add("};");
 
-		// --- pineapple-p special single-bin ---
 		} else if (ChipInfo.which == ChipInfo.type.pineapplep_singleBin) {
-			// ⬇️ Only emit gpu-pwrlevels-0 block; genBack() will wrap it in gpu-pwrlevel-bins
+			// Special handling for Pineapple-P (single-bin inside gpu-pwrlevel-bins)
+			lines.add("qcom,gpu-pwrlevel-bins {");
 			lines.add("qcom,gpu-pwrlevels-0 {");
 			lines.addAll(bins.get(0).header);
 			for (int pwr_level_id = 0; pwr_level_id < bins.get(0).levels.size(); pwr_level_id++) {
@@ -314,9 +300,9 @@ public class GpuTableEditor {
 				lines.addAll(bins.get(0).levels.get(pwr_level_id).lines);
 				lines.add("};");
 			}
-			lines.add("};");
+			lines.add("};"); // close gpu-pwrlevels-0
+			lines.add("};"); // close gpu-pwrlevel-bins
 		}
-
 		return lines;
 	}
 
