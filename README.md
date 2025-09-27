@@ -12,7 +12,8 @@
 
 This update makes KonaBess fully compatible with Pineapple-P devices.
 
-
+### Based on
+v0.25.1-GRANULATED
 
 # KonaBess GRANULATED
 
