@@ -155,23 +155,40 @@ public class GpuVoltEditor {
         bufferedWriter.close();
     }
 
+    // --- NEW: dump final DTS for debugging ---
+    public static void dumpToFile(List<String> new_dts) {
+        try {
+            File dump = new File("/sdcard/gpu_dump.txt");
+            BufferedWriter writer = new BufferedWriter(new FileWriter(dump));
+            for (String s : new_dts) {
+                writer.write(s);
+                writer.newLine();
+            }
+            writer.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+	
     private static View generateToolBar(Activity activity) {
         LinearLayout toolbar = new LinearLayout(activity);
         HorizontalScrollView horizontalScrollView = new HorizontalScrollView(activity);
         horizontalScrollView.addView(toolbar);
 
         {
-            Button button = new Button(activity);
-            button.setText(R.string.save_volt_table);
-            toolbar.addView(button);
-            button.setOnClickListener(v -> {
-                try {
-                    writeOut(genBack(genTable()));
-                    Toast.makeText(activity, R.string.save_success, Toast.LENGTH_SHORT).show();
-                } catch (Exception e) {
-                    DialogUtil.showError(activity, R.string.save_failed);
-                }
-            });
+			Button button = new Button(activity);
+			button.setText(R.string.save_volt_table);
+			toolbar.addView(button);
+			button.setOnClickListener(v -> {
+				try {
+					List<String> final_dts = genBack(genTable());  // build DTS table
+					writeOut(final_dts);                          // write to KonaBessCore.dts_path
+					dumpToFile(final_dts);                        // extra dump to /sdcard/gpu_dump.txt
+					Toast.makeText(activity, R.string.save_success, Toast.LENGTH_SHORT).show();
+				} catch (Exception e) {
+					DialogUtil.showError(activity, R.string.save_failed);
+				}
+			});
         }
         return horizontalScrollView;
     }
